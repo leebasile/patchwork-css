@@ -17,6 +17,21 @@ function toClassString(value: string | string[] | undefined): string {
 }
 
 /**
+ * Deduplicates a list of class tokens, preserving first-occurrence order.
+ */
+function deduplicateClasses(parts: string[]): string {
+  const seen = new Set<string>();
+  return parts
+    .flatMap((p) => p.split(/\s+/))
+    .filter((cls) => {
+      if (!cls || seen.has(cls)) return false;
+      seen.add(cls);
+      return true;
+    })
+    .join(" ");
+}
+
+/**
  * Composes a deterministic set of CSS classes from a config and a variant
  * selection.  The result is a single, deduplicated, space-separated string.
  *
@@ -62,15 +77,6 @@ export function compose(
       }
     }
 
-    // Deduplicate while preserving order
-    const seen = new Set<string>();
-    return parts
-      .flatMap((p) => p.split(/\s+/))
-      .filter((cls) => {
-        if (!cls || seen.has(cls)) return false;
-        seen.add(cls);
-        return true;
-      })
-      .join(" ");
+    return deduplicateClasses(parts);
   };
 }
