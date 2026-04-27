@@ -28,3 +28,21 @@ export function buildResponsiveClasses(
 
   return classes;
 }
+
+/**
+ * Same as {@link buildResponsiveClasses} but returns a single space-separated
+ * class string, ready to be assigned to an element's `className` prop.
+ *
+ * @example
+ * buildResponsiveClassName(
+ *   { sm: 'sm:', md: 'md:', lg: 'lg:' },
+ *   { display: { base: 'block', md: 'flex' }, gap: 'gap-4' }
+ * )
+ * // => 'block md:flex gap-4'
+ */
+export function buildResponsiveClassName(
+  breakpoints: BreakpointMap,
+  config: ResponsiveConfig,
+): string {
+  return buildResponsiveClasses(breakpoints, config).join(' ');
+}
