@@ -57,4 +57,20 @@ describe("compose", () => {
     const empty = compose({});
     expect(empty()).toBe("");
   });
+
+  it("handles compound variant with array classes", () => {
+    const c = compose({
+      base: "card",
+      variants: {
+        size: { lg: "card-lg" },
+        intent: { danger: "card-danger" },
+      },
+      compoundVariants: [
+        { variants: { size: "lg", intent: "danger" }, classes: ["card-loud", "card-alert"] },
+      ],
+    });
+    expect(c({ size: "lg", intent: "danger" })).toBe(
+      "card card-lg card-danger card-loud card-alert"
+    );
+  });
 });
