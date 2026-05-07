@@ -9,10 +9,19 @@ export type ClassInput = string | string[] | Record<string, boolean> | null | un
 /**
  * Extracts the "property prefix" from a utility class.
  * e.g. "text-red-500" -> "text", "bg-blue-100" -> "bg"
+ * Handles variant prefixes like "hover:text-red-500" -> "hover:text"
  */
 export function getClassPrefix(cls: string): string {
-  const parts = cls.trim().split("-");
-  return parts[0] ?? cls;
+  const trimmed = cls.trim();
+  // Handle variant prefixes (e.g. hover:, focus:, sm:)
+  const variantSplit = trimmed.indexOf(":");
+  if (variantSplit !== -1) {
+    const variant = trimmed.slice(0, variantSplit + 1);
+    const base = trimmed.slice(variantSplit + 1).split("-")[0] ?? "";
+    return variant + base;
+  }
+  const parts = trimmed.split("-");
+  return parts[0] ?? trimmed;
 }
 
 /**
@@ -37,6 +46,7 @@ export function flattenClassInput(input: ClassInput): string[] {
  *
  * @example
  * merge("text-sm text-red-500", "text-lg") // => "text-red-500 text-lg"
+ * merge("hover:text-sm", "hover:text-lg") // => "hover:text-lg"
  */
 export function merge(...inputs: ClassInput[]): string {
   const prefixMap = new Map<string, string>();
